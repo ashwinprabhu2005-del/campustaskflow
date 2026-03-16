@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - CampusTaskFlow Pro{% endblock %}
+
+{% block content %}
+<div class="container fade-in-scroll">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="glass-card p-5 text-center position-relative overflow-hidden">
+                <!-- Abstract background shape -->
+                <div class="position-absolute rounded-circle bg-electric opacity-10" style="width: 200px; height: 200px; top: -50px; right: -50px; filter: blur(40px);"></div>
+                
+                <div class="bg-charcoal d-inline-flex justify-content-center align-items-center rounded-circle border border-secondary mb-4" style="width: 80px; height: 80px;">
+                    <span class="fs-2">👤</span>
+                </div>
+                
+                <h2 class="fw-bold text-white mb-2">{{ user.username }}</h2>
+                {% if user.email %}
+                <p class="text-white-50 mb-4">{{ user.email }}</p>
+                {% endif %}
+                
+                <div class="d-flex justify-content-center gap-4 text-start bg-charcoal-light p-3 rounded-3 mb-4 border border-secondary">
+                    <div>
+                        <small class="text-white-50 text-uppercase tracking-wider fw-bold" style="font-size: 0.7rem;">Member Since</small>
+                        <p class="mb-0 fw-medium">{{ user.date_joined|date:"M j, Y" }}</p>
+                    </div>
+                    <div class="vr bg-secondary opacity-25"></div>
+                    <div>
+                        <small class="text-white-50 text-uppercase tracking-wider fw-bold" style="font-size: 0.7rem;">Account Status</small>
+                        <p class="mb-0 fw-medium text-electric">Pro Tier</p>
+                    </div>
+                </div>
+
+                <a href="{% url 'logout' %}" class="btn btn-outline-danger rounded-pill px-4">Sign Out</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

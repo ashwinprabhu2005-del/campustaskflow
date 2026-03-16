@@ -1,0 +1,146 @@
+/* Premium Aesthetic Roots */
+:root {
+    --charcoal: #0F1115;
+    --charcoal-light: #1A1D24;
+    --charcoal-lighter: #272B36;
+    --electric: #3B82F6;
+    --electric-hover: #2563EB;
+    --slate: #64748B;
+    --accent: #10B981;
+    --font-family: 'Inter', -apple-system, sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--charcoal);
+    color: #F8FAFC;
+    -webkit-font-smoothing: antialiased;
+}
+
+.bg-charcoal { background-color: var(--charcoal) !important; }
+.text-electric { color: var(--electric) !important; }
+.btn-electric { background-color: var(--electric); border-color: var(--electric); }
+.btn-electric:hover { background-color: var(--electric-hover); border-color: var(--electric-hover); }
+.shadow-electric { box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39); }
+.shadow-electric:hover { box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45); transform: translateY(-1px); }
+
+/* Layout adjustments */
+.main-content {
+    min-height: 80vh;
+    padding-top: 100px;
+}
+
+/* Glassmorphism Navbar */
+.glass-nav {
+    background: rgba(15, 17, 21, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.p-btn-hover {
+    transition: color 0.2s ease;
+}
+.p-btn-hover:hover {
+    color: var(--white) !important;
+}
+
+/* Premium Glass Cards */
+.glass-card {
+    background: rgba(26, 29, 36, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Base Form Overrides for Django rendered forms */
+.task-form p {
+    margin-bottom: 1.25rem;
+}
+.task-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #cbd5e1;
+    font-weight: 500;
+}
+.task-form input, .task-form select, .task-form textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: var(--charcoal-light);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: white;
+    font-family: var(--font-family);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.task-form input:focus, .task-form select:focus, .task-form textarea:focus {
+    outline: none;
+    border-color: var(--electric);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Overwrite generic buttons to match new aesthetic */
+.btn-primary {
+    background-color: var(--electric);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+.btn-primary:hover {
+    background-color: var(--electric-hover);
+    transform: translateY(-1px);
+}
+
+/* Keep basic priority colors but adapt for dark theme */
+.badge {
+    padding: 0.4em 0.8em;
+    border-radius: 6px;
+    font-weight: 600;
+}
+.priority-high { background-color: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+.priority-medium { background-color: rgba(245, 158, 11, 0.2); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
+.priority-low { background-color: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+/* Update row highlighting for dark theme */
+tr.row-priority-high { background-color: rgba(239, 68, 68, 0.05) !important; }
+tr.row-priority-high:hover { background-color: rgba(239, 68, 68, 0.1) !important; }
+tr.row-priority-medium { background-color: rgba(245, 158, 11, 0.05) !important; }
+tr.row-priority-medium:hover { background-color: rgba(245, 158, 11, 0.1) !important; }
+tr.row-priority-low { background-color: rgba(16, 185, 129, 0.05) !important; }
+tr.row-priority-low:hover { background-color: rgba(16, 185, 129, 0.1) !important; }
+
+/* Status Badges */
+.status-completed { background-color: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
+.status-pending { background-color: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.3); }
+
+/* Animations */
+.fade-in-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.fade-in-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Custom Table Overrides */
+.table-dark {
+    --bs-table-bg: var(--charcoal-light);
+    --bs-table-striped-bg: var(--charcoal-lighter);
+    --bs-table-border-color: rgba(255,255,255,0.05);
+}
+.table-dark tbody tr:hover {
+    background-color: rgba(255,255,255,0.02);
+}

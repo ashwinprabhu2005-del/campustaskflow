@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}My Tasks - CampusTaskFlow Pro{% endblock %}
+
+{% block content %}
+<div class="container fade-in-scroll">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">My <span class="text-electric">Tasks</span></h2>
+        <a href="{% url 'add_task' %}" class="btn btn-electric rounded-pill shadow-electric px-4">+ New Task</a>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="glass-card mb-4 p-3 border-0">
+        <form method="GET" action="{% url 'task_list' %}" class="d-flex w-100 gap-3 align-items-end">
+            <div class="flex-grow-1">
+                <label for="category" class="form-label text-white-50 fw-semibold mb-2">Filter by Category</label>
+                <select name="category_id" id="category" class="form-select bg-charcoal text-white border-secondary">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if request.GET.category_id == cat.id|stringformat:"s" %}selected{% endif %}>
+                            {{ cat.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-outline-light rounded px-4 h-100 mb-0">Filter</button>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="glass-card border-0 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover mb-0 align-middle">
+                <thead>
+                    <tr class="text-uppercase text-white-50" style="font-size: 0.85rem; letter-spacing: 0.05em;">
+                        <th class="ps-4 py-3 border-top-0">Title</th>
+                        <th class="py-3 border-top-0">Priority</th>
+                        <th class="py-3 border-top-0">Due Date</th>
+                        <th class="py-3 border-top-0">Category</th>
+                        <th class="py-3 border-top-0">Status</th>
+                        <th class="pe-4 py-3 border-top-0 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                    <tr class="{% if task.priority == 'High' %}row-priority-high{% elif task.priority == 'Medium' %}row-priority-medium{% else %}row-priority-low{% endif %}">
+                        <td class="ps-4 fw-medium">{{ task.title }}</td>
+                        <td>
+                            <span class="badge {% if task.priority == 'High' %}priority-high{% elif task.priority == 'Medium' %}priority-medium{% else %}priority-low{% endif %}">
+                                {{ task.priority }}
+                            </span>
+                        </td>
+                        <td class="text-white-50">{{ task.due_date }}</td>
+                        <td>
+                            {% if task.category %}
+                                <span class="badge bg-secondary text-white">{{ task.category.name }}</span>
+                            {% else %}
+                                <span class="text-white-50 fst-italic">None</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if task.is_completed %}
+                                <span class="badge status-completed">Completed</span>
+                            {% else %}
+                                <span class="badge status-pending">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td class="pe-4 text-end">
+                            <a href="{% url 'task_detail' task.id %}" class="btn btn-sm btn-outline-light rounded-pill px-3">View Details</a>
+                            {% if not task.is_completed %}
+                            <a href="{% url 'complete_task' task.id %}" class="btn btn-sm btn-outline-success rounded-pill px-3 ms-2">Complete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-white-50">
+                            <div class="fs-1 mb-3">📭</div>
+                            No tasks found matching your criteria.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

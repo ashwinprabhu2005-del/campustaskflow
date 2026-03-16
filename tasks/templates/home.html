@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}CampusTaskFlow Pro - Elevate Your Productivity{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 text-center fade-in-scroll" style="margin-top: 4rem;">
+    <div class="container">
+        <h1 class="display-3 fw-bold mb-4 text-white tracking-tight">Supercharge Your <br/><span class="text-electric">Academic Workflow</span></h1>
+        <p class="lead text-white-50 mb-5 mx-auto" style="max-width: 700px;">
+            The premium task management platform built exclusively for college students. Organize assignments, track productivity analytics, and never miss a deadline again with our intelligent reminder system.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'register' %}" class="btn btn-electric btn-lg rounded-pill px-5 shadow-electric">Get Started Free</a>
+            <a href="#features" class="btn btn-outline-light btn-lg rounded-pill px-5">Explore Features</a>
+        </div>
+    </div>
+</section>
+
+<!-- Social Proof Marquee -->
+<section class="py-4 border-top border-bottom border-secondary my-5 fade-in-scroll" style="background: rgba(255,255,255,0.02);">
+    <div class="container text-center">
+        <p class="text-white-50 small text-uppercase tracking-wider fw-semibold mb-3">Trusted by Students at Top Universities</p>
+        <div class="d-flex justify-content-center flex-wrap gap-4 opacity-50">
+            <h5 class="m-0 fw-bold">STANFORD</h5>
+            <h5 class="m-0 fw-bold">MIT</h5>
+            <h5 class="m-0 fw-bold">HARVARD</h5>
+            <h5 class="m-0 fw-bold">BERKELEY</h5>
+            <h5 class="m-0 fw-bold">OXFORD</h5>
+        </div>
+    </div>
+</section>
+
+<!-- Features Grid -->
+<section id="features" class="py-5 fade-in-scroll">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-white">Everything You Need to Succeed</h2>
+            <p class="text-white-50">Premium toolsets designed specifically for the modern student.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="glass-card p-4 h-100 text-center">
+                    <div class="fs-1 text-electric mb-3">🎯</div>
+                    <h4 class="text-white fw-semibold mb-3">Smart Task Tracking</h4>
+                    <p class="text-white-50 small mb-0">Categorize and prioritize tasks seamlessly. Our responsive UI ensures you always know what's next.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-4 h-100 text-center">
+                    <div class="fs-1 text-electric mb-3">📊</div>
+                    <h4 class="text-white fw-semibold mb-3">Analytics Dashboard</h4>
+                    <p class="text-white-50 small mb-0">Visualize your productivity natively with dynamic Chart.js charts. Monitor completions and identify bottlenecks.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-4 h-100 text-center">
+                    <div class="fs-1 text-electric mb-3">🔔</div>
+                    <h4 class="text-white fw-semibold mb-3">Automated Reminders</h4>
+                    <p class="text-white-50 small mb-0">Never forget a deadline. Our system intelligently emails you 24 hours before any high-stakes assignment is due.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing -->
+<section class="py-5 mb-5 fade-in-scroll">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-white">Simple, Transparent Pricing</h2>
+        </div>
+        <div class="row justify-content-center g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="glass-card p-4 h-100 text-center border-0 border-top border-3 border-secondary">
+                    <h4 class="text-white fw-bold mb-3">Basic</h4>
+                    <h2 class="display-4 fw-bold text-white mb-4">$0<span class="fs-5 text-white-50 fw-normal">/mo</span></h2>
+                    <ul class="list-unstyled text-white-50 text-start mb-4 ps-3">
+                        <li class="mb-2">✓ Unlimited Tasks</li>
+                        <li class="mb-2">✓ Categories Support</li>
+                        <li class="mb-2">✗ Advanced Analytics</li>
+                        <li class="mb-2">✗ Email Reminders</li>
+                    </ul>
+                    <a href="{% url 'register' %}" class="btn btn-outline-light w-100">Sign Up Free</a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="glass-card p-4 h-100 text-center position-relative border-0 border-top border-3 border-electric" style="transform: scale(1.05); z-index: 10;">
+                    <span class="badge bg-electric text-white position-absolute top-0 start-50 translate-middle rounded-pill px-3 py-2">MOST POPULAR</span>
+                    <h4 class="text-electric fw-bold mb-3 mt-2">Pro</h4>
+                    <h2 class="display-4 fw-bold text-white mb-4">$5<span class="fs-5 text-white-50 fw-normal">/mo</span></h2>
+                    <ul class="list-unstyled text-white-50 text-start mb-4 ps-3">
+                        <li class="mb-2">✓ Everything in Basic</li>
+                        <li class="mb-2 text-white fw-medium">✓ Advanced Analytics Dashboard</li>
+                        <li class="mb-2 text-white fw-medium">✓ Custom Email Reminders</li>
+                        <li class="mb-2 text-white fw-medium">✓ Priority Support</li>
+                    </ul>
+                    <a href="{% url 'register' %}" class="btn btn-electric shadow-electric w-100">Upgrade to Pro</a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="glass-card p-4 h-100 text-center border-0 border-top border-3 border-secondary">
+                    <h4 class="text-white fw-bold mb-3">Enterprise</h4>
+                    <h2 class="display-4 fw-bold text-white mb-4">$29<span class="fs-5 text-white-50 fw-normal">/mo</span></h2>
+                    <ul class="list-unstyled text-white-50 text-start mb-4 ps-3">
+                        <li class="mb-2">✓ Everything in Pro</li>
+                        <li class="mb-2 text-white fw-medium">✓ Unlimited Users</li>
+                        <li class="mb-2 text-white fw-medium">✓ Organization Analytics</li>
+                        <li class="mb-2 text-white fw-medium">✓ Custom SLA</li>
+                    </ul>
+                    <a href="{% url 'register' %}" class="btn btn-outline-light w-100">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

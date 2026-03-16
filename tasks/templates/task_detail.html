@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ task.title }} - CampusTaskFlow Pro{% endblock %}
+
+{% block content %}
+<div class="container fade-in-scroll">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="glass-card p-5 border-top border-4 border-electric position-relative overflow-hidden">
+                
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-start mb-4">
+                    <div>
+                        <h2 class="fw-bold text-white mb-2">{{ task.title }}</h2>
+                        <div class="d-flex gap-2">
+                            <span class="badge {% if task.priority == 'High' %}priority-high{% elif task.priority == 'Medium' %}priority-medium{% else %}priority-low{% endif %}">
+                                {{ task.priority }} Priority
+                            </span>
+                            {% if task.category %}
+                            <span class="badge bg-secondary text-white border border-light border-opacity-10">{{ task.category.name }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-5 bg-charcoal-light p-4 rounded-3 border border-secondary text-white-50">
+                    {% if task.description %}
+                    <p class="mb-0" style="line-height: 1.6;">{{ task.description|linebreaksbr }}</p>
+                    {% else %}
+                    <p class="mb-0 fst-italic">No description provided.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Metadata Row -->
+                <div class="row g-4 mb-5 border-bottom border-secondary pb-5">
+                    <div class="col-sm-6">
+                        <small class="text-white-50 text-uppercase tracking-wider fw-bold d-block mb-1" style="font-size: 0.75rem;">Created On</small>
+                        <p class="fs-5 text-white mb-0">{{ task.created_at|date:"M j, Y" }}</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <small class="text-white-50 text-uppercase tracking-wider fw-bold d-block mb-1" style="font-size: 0.75rem;">Due Date</small>
+                        <p class="fs-5 fw-medium text-electric mb-0" id="due-date-display">{{ task.due_date|date:"M j, Y" }}</p>
+                    </div>
+
+                    {% if task.is_completed %}
+                    <div class="col-sm-12 mt-4 pt-4 border-top border-secondary">
+                        <small class="text-white-50 text-uppercase tracking-wider fw-bold d-block mb-1" style="font-size: 0.75rem;">Status</small>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge status-completed py-2 px-3 fw-bold"><i class="bi bi-check-circle-fill me-1"></i> Completed</span>
+                            <span class="text-white-50 ms-2">on {{ task.completion_date|date:"M j, Y" }}</span>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col-sm-12 mt-4 pt-4 border-top border-secondary">
+                        <small class="text-white-50 text-uppercase tracking-wider fw-bold d-block mb-1" style="font-size: 0.75rem;">Time Remaining</small>
+                        <span id="countdown-timer" class="fs-4 fw-bold text-white shadow-sm p-3 rounded-3 border border-secondary d-inline-block bg-charcoal" data-due="{{ task.due_date|date:'Y-m-d' }}">
+                            Calculating...
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Actions -->
+                <div class="d-flex justify-content-end gap-3">
+                    <a href="{% url 'task_list' %}" class="btn btn-outline-light rounded-pill px-4">Back to List</a>
+                    {% if not task.is_completed %}
+                    <a href="{% url 'complete_task' task.id %}" class="btn btn-success rounded-pill px-4 shadow">
+                        ✓ Mark as Completed
+                    </a>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - CampusTaskFlow Pro{% endblock %}
+
+{% block content %}
+<div class="container fade-in-scroll">
+    <div class="d-flex justify-content-between align-items-center mb-5 border-bottom border-secondary pb-3">
+        <h2 class="fw-bold mb-0">Welcome back, <span class="text-electric">{{ user.username }}</span></h2>
+        <a href="{% url 'analytics' %}" class="btn btn-outline-light rounded-pill px-4">View Full Analytics</a>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center h-100 border-top border-3 border-electric">
+                <h6 class="text-white-50 text-uppercase tracking-wider fw-bold mb-3">Tasks in List</h6>
+                <p class="display-4 fw-bold text-white mb-0">{{ tasks.count }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center h-100">
+                <h6 class="text-white-50 text-uppercase tracking-wider fw-bold mb-3">Upcoming Deadlines</h6>
+                <p class="display-4 fw-bold text-electric mb-0">{% if user.is_authenticated %}0{% else %}0{% endif %}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center h-100">
+                <h6 class="text-white-50 text-uppercase tracking-wider fw-bold mb-3">Productivity Score</h6>
+                <p class="display-4 fw-bold text-success mb-0">98<span class="fs-5">%</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="{% url 'task_list' %}" class="btn btn-electric btn-lg rounded-pill px-5 shadow-electric me-3">Manage Tasks</a>
+        <a href="{% url 'add_task' %}" class="btn btn-outline-light btn-lg rounded-pill px-5">Add New Task</a>
+    </div>
+</div>
+{% endblock %}
