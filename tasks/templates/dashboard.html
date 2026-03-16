@@ -23,9 +23,11 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="glass-card p-4 text-center h-100">
-                <h6 class="text-white-50 text-uppercase tracking-wider fw-bold mb-3">Productivity Score</h6>
-                <p class="display-4 fw-bold text-success mb-0">98<span class="fs-5">%</span></p>
+            <div class="glass-card p-4 text-center h-100 position-relative">
+                <h6 class="text-white-50 text-uppercase tracking-wider fw-bold mb-3">Task Status</h6>
+                <div class="position-relative mx-auto mt-2" style="height: 120px; width: 120px;">
+                    <canvas id="dashboardChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -35,4 +37,48 @@
         <a href="{% url 'add_task' %}" class="btn btn-outline-light btn-lg rounded-pill px-5">Add New Task</a>
     </div>
 </div>
+
+<!-- Chart Integration -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('dashboardChart');
+        if (ctx) {
+            new Chart(ctx.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: {{ status_labels|safe }},
+                    datasets: [{
+                        data: {{ status_data|safe }},
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)', // accent green
+                            'rgba(59, 130, 246, 0.8)'  // electric blue
+                        ],
+                        borderColor: [
+                            '#10B981',
+                            '#3B82F6'
+                        ],
+                        borderWidth: 1,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 17, 21, 0.9)',
+                            titleColor: '#F8FAFC',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}

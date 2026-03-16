@@ -130,6 +130,10 @@ def dashboard_view(request):
         'completed_tasks': completed_tasks,
         'pending_tasks': pending_tasks,
         'high_priority_tasks': high_priority_tasks,
+        
+        # Chart data
+        'status_labels': ['Completed', 'Pending'],
+        'status_data': [completed_tasks, pending_tasks],
     }
     return render(request, 'dashboard.html', context)
 

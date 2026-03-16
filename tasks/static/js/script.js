@@ -36,6 +36,43 @@ document.addEventListener('DOMContentLoaded', () => {
         setInterval(updateTimer, 60000); // Update every minute
     }
 
+    // Live Task List Progress Bars
+    const progressBars = document.querySelectorAll('.time-progress-bar');
+    if (progressBars.length > 0) {
+        function updateProgressBars() {
+            const now = new Date();
+            
+            progressBars.forEach(bar => {
+                const createdDate = new Date(bar.getAttribute('data-created'));
+                const dueDate = new Date(bar.getAttribute('data-due'));
+                dueDate.setHours(23, 59, 59, 999);
+                
+                const totalDuration = dueDate.getTime() - createdDate.getTime();
+                const elapsedDuration = now.getTime() - createdDate.getTime();
+                
+                let percentage = 100 - ((elapsedDuration / totalDuration) * 100);
+                
+                // Clamp between 0 and 100
+                percentage = Math.max(0, Math.min(100, percentage));
+                
+                bar.style.width = percentage + '%';
+                
+                // Color scaling based on urgency
+                if (percentage < 20) {
+                    bar.classList.remove('bg-electric', 'bg-warning');
+                    bar.classList.add('bg-danger');
+                } else if (percentage < 50) {
+                    bar.classList.remove('bg-electric', 'bg-danger');
+                    bar.classList.add('bg-warning');
+                }
+            });
+        }
+        
+        updateProgressBars();
+        // Update bars every 5 seconds for a "live" feel without thrashing CPU
+        setInterval(updateProgressBars, 5000);
+    }
+
     // Scroll Reveal Animation Observer
     const observerOptions = {
         root: null,

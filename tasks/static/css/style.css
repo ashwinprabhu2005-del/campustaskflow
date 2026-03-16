@@ -144,3 +144,14 @@ tr.row-priority-low:hover { background-color: rgba(16, 185, 129, 0.1) !important
 .table-dark tbody tr:hover {
     background-color: rgba(255,255,255,0.02);
 }
+
+/* Canvas Background Styling */
+#particleCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;     /* Put behind content */
+    pointer-events: none; /* Let clicks pass through to underneath elements */
+}
