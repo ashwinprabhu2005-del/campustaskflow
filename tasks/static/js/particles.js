@@ -22,20 +22,15 @@ class Particle {
         
         // Idle floating movement configuration
         this.angle = Math.random() * Math.PI * 2;
-        this.speed = Math.random() * 0.5 + 0.1;
+        this.speed = Math.random() * 1.5 + 0.5; // Increased speed for faster animation
     }
 
     draw() {
         this.ctx.beginPath();
         this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         this.ctx.fillStyle = this.color;
-        
-        // Soft glowing effect
-        this.ctx.shadowBlur = 8;
-        this.ctx.shadowColor = this.color;
-        
+        // Removed heavy shadowBlur to drastically improve Frame Rate (FPS)
         this.ctx.fill();
-        this.ctx.closePath();
     }
 
     update(mouse) {
@@ -48,21 +43,23 @@ class Particle {
         if(this.originY < 0 || this.originY > this.canvas.height) this.speed *= -1;
 
         // Mouse interaction physics
-        let dx = mouse.x - this.x;
-        let dy = mouse.y - this.y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
+        if (mouse.x != null && mouse.y != null) {
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
 
-        let forceDirectionX = dx / distance;
-        let forceDirectionY = dy / distance;
+            if (distance < mouse.radius) {
+                let forceDirectionX = dx / distance;
+                let forceDirectionY = dy / distance;
+                let force = (mouse.radius - distance) / mouse.radius;
+                
+                // Increased repel force significantly for snappier interaction
+                let directionX = forceDirectionX * force * -25; 
+                let directionY = forceDirectionY * force * -25;
 
-        const maxDistance = mouse.radius;
-        let force = (maxDistance - distance) / maxDistance;
-        let directionX = forceDirectionX * force * -5; // Negative forces repel
-        let directionY = forceDirectionY * force * -5;
-
-        if (distance < mouse.radius) {
-            this.vx += directionX;
-            this.vy += directionY;
+                this.vx += directionX;
+                this.vy += directionY;
+            }
         }
 
         // Apply friction and ease back to origin position
@@ -111,28 +108,6 @@ class ParticleSystem {
         this.canvas.height = window.innerHeight;
     }
 
-    drawConnections() {
-        let opacityValue = 1;
-        // Optimization: Rather than O(n^2), limit connection checks slightly or just draw close ones
-        for (let a = 0; a < this.particles.length; a++) {
-            for (let b = a; b < this.particles.length; b++) {
-                let dx = this.particles[a].x - this.particles[b].x;
-                let dy = this.particles[a].y - this.particles[b].y;
-                let distance = dx * dx + dy * dy;
-
-                if (distance < 4500) { // Connect particles really close 
-                    opacityValue = 1 - (distance / 4500);
-                    this.ctx.strokeStyle = `rgba(100, 116, 139, ${opacityValue * 0.2})`;
-                    this.ctx.lineWidth = 1;
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(this.particles[a].x, this.particles[a].y);
-                    this.ctx.lineTo(this.particles[b].x, this.particles[b].y);
-                    this.ctx.stroke();
-                }
-            }
-        }
-    }
-
     animate() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
@@ -141,7 +116,7 @@ class ParticleSystem {
             this.particles[i].update(this.mouse);
         }
         
-        this.drawConnections();
+        // Removed O(n^2) drawConnections loop to guarantee 60 FPS with 1000+ particles
         requestAnimationFrame(() => this.animate());
     }
 
