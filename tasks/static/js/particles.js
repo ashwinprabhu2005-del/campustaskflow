@@ -43,7 +43,7 @@
       this.floatAmp  = Math.random() * 40 + 15;           // wave amplitude
 
       // Visuals
-      this.size  = Math.random() * 2.5 + 1.5;
+      this.size  = Math.random() * 1.0 + 0.5; // Decreased size: 0.5px - 1.5px per request
       this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
     }
 
@@ -132,8 +132,8 @@
 
     _spawn() {
       this.particles = [];
-      // ~1 particle per 500px² of viewport, capped at 2500
-      const count = Math.min(2500, Math.max(900, Math.floor((this.W * this.H) / 500)));
+      // Calculate dense stardust: base density ~1 per 250px², max 5000 particles
+      const count = Math.min(5000, Math.max(1200, Math.floor((this.W * this.H) / 250)));
       for (let i = 0; i < count; i++) {
         this.particles.push(new Particle(this.W, this.virtualH));
       }

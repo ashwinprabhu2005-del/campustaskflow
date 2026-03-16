@@ -123,13 +123,17 @@ def dashboard_view(request):
     total_tasks = tasks.count()
     completed_tasks = tasks.filter(is_completed=True).count()
     pending_tasks = total_tasks - completed_tasks
-    high_priority_tasks = tasks.filter(priority='High').count()
+    
+    # Query pending high-priority items directly for the UI alert
+    urgent_tasks = tasks.filter(priority='High', is_completed=False).order_by('due_date')
+    high_priority_tasks_count = urgent_tasks.count()
     
     context = {
         'total_tasks': total_tasks,
         'completed_tasks': completed_tasks,
         'pending_tasks': pending_tasks,
-        'high_priority_tasks': high_priority_tasks,
+        'high_priority_tasks': high_priority_tasks_count,
+        'urgent_tasks': urgent_tasks,
         
         # Chart data
         'status_labels': ['Completed', 'Pending'],
