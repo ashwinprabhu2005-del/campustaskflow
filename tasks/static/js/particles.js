@@ -129,7 +129,7 @@
             this.particles = [];
             // Scale count to screen area; cap for performance
             const area   = this.canvas.width * this.canvas.height;
-            const count  = Math.min(1000, Math.max(400, Math.floor(area / 1800)));
+            const count  = Math.min(2500, Math.max(800, Math.floor(area / 600)));
             for (let i = 0; i < count; i++) {
                 this.particles.push(new Particle(this.canvas));
             }
