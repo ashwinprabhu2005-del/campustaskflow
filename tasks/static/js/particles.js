@@ -104,8 +104,16 @@ class ParticleSystem {
     }
 
     resize() {
+        // Use full document height instead of just the viewport height
         this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
+        this.canvas.height = Math.max(
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight,
+            document.body.offsetHeight,
+            document.documentElement.offsetHeight,
+            document.body.clientHeight,
+            document.documentElement.clientHeight
+        );
     }
 
     animate() {
@@ -122,10 +130,14 @@ class ParticleSystem {
 
     addEventListeners() {
         window.addEventListener('resize', () => this.init());
+        
+        // Re-init if document height changes dynamically (e.g. after images load)
+        const observer = new ResizeObserver(() => this.resize());
+        observer.observe(document.body);
 
         window.addEventListener('mousemove', (event) => {
-            this.mouse.x = event.x;
-            this.mouse.y = event.y;
+            this.mouse.x = event.pageX; // Use pageX to account for scroll
+            this.mouse.y = event.pageY;
         });
 
         window.addEventListener('mouseout', () => {
