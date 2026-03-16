@@ -1,160 +1,186 @@
-class Particle {
-    constructor(canvas, ctx) {
-        this.canvas = canvas;
-        this.ctx = ctx;
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.originX = this.x;
-        this.originY = this.y;
-        this.vx = 0;
-        this.vy = 0;
-        this.size = Math.random() * 2 + 1; // 1 to 3 px
-        this.friction = 0.92;
-        this.ease = 0.05;
+/**
+ * Particle Canvas System for CampusTaskFlow Pro
+ * Features: Mouse repel, vivid colors, 60fps, full-page coverage via scroll mapping
+ * Strategy: Canvas is FIXED to viewport. Particles are distributed across
+ * a virtual space 3x the page height. Scroll offset translates the view.
+ **/
 
-        const colors = [
-            'rgba(59, 130, 246, 0.8)',   // blue
-            'rgba(168, 85, 247, 0.8)',   // purple
-            'rgba(236, 72, 153, 0.8)',   // pink
-            'rgba(249, 115, 22, 0.8)'    // orange
-        ];
-        this.color = colors[Math.floor(Math.random() * colors.length)];
-        
-        // Idle floating movement configuration
-        this.angle = Math.random() * Math.PI * 2;
-        this.speed = Math.random() * 1.5 + 0.5; // Increased speed for faster animation
+(function () {
+    'use strict';
+
+    const MOUSE_RADIUS = 140;
+    const FRICTION    = 0.88;
+    const EASE        = 0.06;
+    const REPEL_FORCE = 30;
+
+    // Vivid, dark-friendly colors (full opacity)
+    const COLORS = [
+        '#3B82F6',  // Bright Blue
+        '#A855F7',  // Vivid Purple
+        '#EC4899',  // Hot Pink
+        '#F97316',  // Deep Orange
+        '#06B6D4',  // Cyan
+    ];
+
+    class Particle {
+        constructor(canvas) {
+            this.canvas = canvas;
+            this.reset(true);
+        }
+
+        reset(initial) {
+            this.originX = Math.random() * this.canvas.width;
+            // Distribute across full virtual height (3x viewport so scrolling reveals more)
+            this.originY = Math.random() * this.canvas.virtualHeight;
+            if (initial) {
+                this.x = this.originX;
+                this.y = this.originY;
+            }
+            this.vx    = 0;
+            this.vy    = 0;
+            this.size  = Math.random() * 2.5 + 1.5;  // 1.5–4px, bigger = more visible
+            this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+            // Idle float
+            this.floatAngle = Math.random() * Math.PI * 2;
+            this.floatSpeed = Math.random() * 0.6 + 0.3;
+            this.floatRadius = Math.random() * 1.2 + 0.5;
+        }
+
+        draw(ctx, scrollY) {
+            // Convert from virtual coords to screen coords using current scroll
+            const screenY = this.y - scrollY;
+
+            // Only draw particles visible on screen (80px buffer for smooth edge entry)
+            if (screenY < -80 || screenY > this.canvas.height + 80) return;
+
+            ctx.beginPath();
+            ctx.arc(this.originX, screenY, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.globalAlpha = 0.92;
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+
+        update(mouse, scrollY) {
+            // Gentle idle float
+            this.floatAngle += 0.008;
+            this.originX += Math.cos(this.floatAngle) * this.floatSpeed * this.floatRadius * 0.1;
+            this.originY += Math.sin(this.floatAngle) * this.floatSpeed * this.floatRadius * 0.1;
+
+            // Wrap particles at canvas edges
+            if (this.originX < 0)  this.originX = this.canvas.width;
+            if (this.originX > this.canvas.width) this.originX = 0;
+            if (this.originY < 0)  this.originY = this.canvas.virtualHeight;
+            if (this.originY > this.canvas.virtualHeight) this.originY = 0;
+
+            // Mouse interaction — convert mouse viewport coords to virtual
+            if (mouse.x !== null) {
+                const mouseVirtualY = mouse.y + scrollY;
+                const dx = mouse.x - this.originX;
+                const dy = mouseVirtualY - this.originY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < MOUSE_RADIUS && dist > 0) {
+                    const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
+                    this.vx -= (dx / dist) * force * REPEL_FORCE;
+                    this.vy -= (dy / dist) * force * REPEL_FORCE;
+                }
+            }
+
+            // Apply physics
+            this.vx *= FRICTION;
+            this.vy *= FRICTION;
+
+            // Ease origin back (not x/y — origin IS the render position)
+            this.originX += this.vx;
+            this.originY += this.vy;
+        }
     }
 
-    draw() {
-        this.ctx.beginPath();
-        this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        this.ctx.fillStyle = this.color;
-        // Removed heavy shadowBlur to drastically improve Frame Rate (FPS)
-        this.ctx.fill();
-    }
+    class ParticleCanvas {
+        constructor() {
+            this.canvas = document.getElementById('particleCanvas');
+            if (!this.canvas) return;
 
-    update(mouse) {
-        // Idle floating
-        this.originX += Math.cos(this.angle) * this.speed;
-        this.originY += Math.sin(this.angle) * this.speed;
-        
-        // Bounce idle targets off edges safely
-        if(this.originX < 0 || this.originX > this.canvas.width) this.speed *= -1;
-        if(this.originY < 0 || this.originY > this.canvas.height) this.speed *= -1;
+            this.ctx = this.canvas.getContext('2d');
+            this.particles = [];
+            this.mouse  = { x: null, y: null };
+            this.scrollY = 0;
+            this.raf = null;
 
-        // Mouse interaction physics
-        if (mouse.x != null && mouse.y != null) {
-            let dx = mouse.x - this.x;
-            let dy = mouse.y - this.y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
+            this.setupCanvas();
+            this.buildParticles();
+            this.bindEvents();
+            this.loop();
+        }
 
-            if (distance < mouse.radius) {
-                let forceDirectionX = dx / distance;
-                let forceDirectionY = dy / distance;
-                let force = (mouse.radius - distance) / mouse.radius;
-                
-                // Increased repel force significantly for snappier interaction
-                let directionX = forceDirectionX * force * -25; 
-                let directionY = forceDirectionY * force * -25;
+        setupCanvas() {
+            this.canvas.width  = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+            // Virtual height so particles can populate the scrollable area
+            this.canvas.virtualHeight = Math.max(
+                document.body.scrollHeight,
+                document.documentElement.scrollHeight,
+                window.innerHeight * 3
+            );
+        }
 
-                this.vx += directionX;
-                this.vy += directionY;
+        buildParticles() {
+            this.particles = [];
+            // Scale count to screen area; cap for performance
+            const area   = this.canvas.width * this.canvas.height;
+            const count  = Math.min(1000, Math.max(400, Math.floor(area / 1800)));
+            for (let i = 0; i < count; i++) {
+                this.particles.push(new Particle(this.canvas));
             }
         }
 
-        // Apply friction and ease back to origin position
-        this.x += (this.vx *= this.friction) + (this.originX - this.x) * this.ease;
-        this.y += (this.vy *= this.friction) + (this.originY - this.y) * this.ease;
-    }
-}
+        loop() {
+            const ctx = this.ctx;
+            ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-class ParticleSystem {
-    constructor() {
-        this.canvas = document.getElementById('particleCanvas');
-        if (!this.canvas) return; // Exit if not on the correct page
-
-        this.ctx = this.canvas.getContext('2d');
-        this.particles = [];
-        
-        this.mouse = {
-            x: null,
-            y: null,
-            radius: 150
-        };
-
-        this.init();
-        this.addEventListeners();
-        this.animate();
-    }
-
-    init() {
-        this.resize();
-        this.particles = [];
-        
-        // Calculate responsive particle count based on screen area (Roughly 1000 for standard 1080p desktop)
-        const area = this.canvas.width * this.canvas.height;
-        let numberOfParticles = Math.floor(area / 2000); 
-        
-        // Clamp bounds (800 - 1200 as requested)
-        numberOfParticles = Math.max(800, Math.min(1200, numberOfParticles));
-
-        for (let i = 0; i < numberOfParticles; i++) {
-            this.particles.push(new Particle(this.canvas, this.ctx));
-        }
-    }
-
-    resize() {
-        // Use full document height instead of just the viewport height
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = Math.max(
-            document.body.scrollHeight,
-            document.documentElement.scrollHeight,
-            document.body.offsetHeight,
-            document.documentElement.offsetHeight,
-            document.body.clientHeight,
-            document.documentElement.clientHeight
-        );
-    }
-
-    animate() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
-        for (let i = 0; i < this.particles.length; i++) {
-            this.particles[i].draw();
-            this.particles[i].update(this.mouse);
-        }
-        
-        // Removed O(n^2) drawConnections loop to guarantee 60 FPS with 1000+ particles
-        requestAnimationFrame(() => this.animate());
-    }
-
-    addEventListeners() {
-        window.addEventListener('resize', () => this.init());
-        
-        // Re-init if document height changes dynamically (e.g. after images load)
-        const observer = new ResizeObserver(() => this.resize());
-        observer.observe(document.body);
-
-        window.addEventListener('mousemove', (event) => {
-            this.mouse.x = event.pageX; // Use pageX to account for scroll
-            this.mouse.y = event.pageY;
-        });
-
-        window.addEventListener('mouseout', () => {
-            this.mouse.x = undefined;
-            this.mouse.y = undefined;
-        });
-        
-        window.addEventListener('touchmove', (event) => {
-            if(event.touches.length > 0) {
-                this.mouse.x = event.touches[0].clientX;
-                this.mouse.y = event.touches[0].clientY;
+            for (const p of this.particles) {
+                p.update(this.mouse, this.scrollY);
+                p.draw(ctx, this.scrollY);
             }
-        });
-    }
-}
 
-// Initialize system after DOM loads
-document.addEventListener('DOMContentLoaded', () => {
-    new ParticleSystem();
-});
+            this.raf = requestAnimationFrame(() => this.loop());
+        }
+
+        bindEvents() {
+            window.addEventListener('resize', () => {
+                this.setupCanvas();
+                this.buildParticles();
+            });
+
+            // clientX/Y — viewport coordinates (correct for fixed canvas)
+            window.addEventListener('mousemove', (e) => {
+                this.mouse.x = e.clientX;
+                this.mouse.y = e.clientY;
+            });
+
+            window.addEventListener('mouseleave', () => {
+                this.mouse.x = null;
+                this.mouse.y = null;
+            });
+
+            // Touch support
+            window.addEventListener('touchmove', (e) => {
+                this.mouse.x = e.touches[0].clientX;
+                this.mouse.y = e.touches[0].clientY;
+            }, { passive: true });
+
+            window.addEventListener('touchend', () => {
+                this.mouse.x = null;
+                this.mouse.y = null;
+            });
+
+            // Track scroll so particles in lower sections become visible
+            window.addEventListener('scroll', () => {
+                this.scrollY = window.scrollY;
+            }, { passive: true });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => new ParticleCanvas());
+})();
