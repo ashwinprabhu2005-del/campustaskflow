@@ -17,7 +17,8 @@
   const EASE         = 0.04;       // How fast particles spring back to origin
   const REPEL_FORCE  = 8;          // How hard the mouse pushes particles
   const IDLE_SPEED   = 0.8;        // Base floating speed multiplier
-  const COLORS = ['#3B82F6','#A855F7','#EC4899','#F97316','#06B6D4'];
+  // Darker, deeper shades for a stealthier feel on the pure black background
+  const COLORS = ['#1E3A8A', '#581C87', '#9D174D', '#9A3412', '#164E63'];
 
   // ─── Particle ───────────────────────────────────────────────────────────────
   class Particle {
