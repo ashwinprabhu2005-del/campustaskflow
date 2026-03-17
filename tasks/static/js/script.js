@@ -92,4 +92,24 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.fade-in-scroll').forEach((elem) => {
         observer.observe(elem);
     });
+
+    // Custom Glowing Cursor Logic
+    const cursor = document.getElementById('custom-cursor');
+    if (cursor) {
+        document.addEventListener('mousemove', e => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Add expansion effect when hovering clickable elements
+        const clickables = document.querySelectorAll('a, button, input, select, textarea, .glass-card');
+        clickables.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Hide custom cursor completely off-screen
+        document.addEventListener('mouseleave', () => cursor.style.display = 'none');
+        document.addEventListener('mouseenter', () => cursor.style.display = 'block');
+    }
 });

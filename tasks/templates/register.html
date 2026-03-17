@@ -3,21 +3,23 @@
 {% block title %}Register - CampusTaskFlow{% endblock %}
 
 {% block content %}
-<div style="max-width: 400px; margin: 0 auto; background: var(--white); padding: 2rem; border-radius: var(--border-radius); box-shadow: var(--box-shadow);">
-    <h2 style="text-align: center; margin-bottom: 1.5rem;">Register</h2>
-    
-    {% if verification_sent %}
-    <div style="background-color: #e8f5e9; color: #2e7d32; padding: 1rem; border-radius: var(--border-radius); text-align: center; margin-bottom: 1rem;">
-        <p>Registration successful! Please check your email to verify your account.</p>
+<div class="container fade-in-scroll d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+    <div class="glass-card p-5 w-100" style="max-width: 450px;">
+        <h2 class="text-center fw-bold mb-4" style="background: linear-gradient(135deg, var(--neon-purple), var(--electric)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Create Account</h2>
+        
+        {% if verification_sent %}
+        <div class="alert bg-charcoal border border-success text-success p-3 rounded-3 text-center mb-4 border-opacity-50">
+            <p class="mb-0 fw-medium">Registration successful! Please check your email to verify your account.</p>
+        </div>
+        {% else %}
+        <form method="POST" class="task-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-electric shadow-electric w-100 py-2 mt-3" style="font-size: 1.1rem;">Register Now</button>
+        </form>
+        {% endif %}
+        
+        <p class="text-center mt-4 mb-0 text-white-50">Already have an account? <a href="{% url 'login' %}" class="text-electric text-decoration-none fw-medium p-btn-hover">Login here</a></p>
     </div>
-    {% else %}
-    <form method="POST" class="task-form" style="padding: 0; box-shadow: none; max-width: 100%;">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Create Account</button>
-    </form>
-    {% endif %}
-    
-    <p style="text-align: center; margin-top: 1rem;">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
 </div>
 {% endblock %}

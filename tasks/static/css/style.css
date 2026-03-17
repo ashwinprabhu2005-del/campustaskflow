@@ -1,28 +1,81 @@
 /* Premium Aesthetic Roots */
 :root {
-    --charcoal: #000000;
-    --charcoal-light: #0A0A0A;
-    --charcoal-lighter: #121212;
-    --electric: #3B82F6;
-    --electric-hover: #2563EB;
+    --bg-dark: #0D0D0D;      /* Deep Charcoal Black */
+    --charcoal-light: #16161a;
+    --charcoal-lighter: #1F1F24;
+    --electric: #3B82F6;     /* Bright Blue Accent */
+    --neon-purple: #A855F7;  /* Neon Purple Accent */
     --slate: #64748B;
     --accent: #10B981;
     --font-family: 'Inter', -apple-system, sans-serif;
+    --transition: 300ms ease-in-out;
 }
 
 body {
     font-family: var(--font-family);
-    background-color: var(--charcoal);
+    background-color: var(--bg-dark);
     color: #F8FAFC;
     -webkit-font-smoothing: antialiased;
+    cursor: none; /* Hide default cursor for custom follower */
+    
+    /* Subtle noise/texture overlay using a very faint gradient */
+    background-image: radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.03), transparent 25%),
+                      radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.03), transparent 25%);
+    background-attachment: fixed;
 }
 
-.bg-charcoal { background-color: var(--charcoal) !important; }
+.bg-charcoal { background-color: var(--bg-dark) !important; }
 .text-electric { color: var(--electric) !important; }
-.btn-electric { background-color: var(--electric); border-color: var(--electric); }
-.btn-electric:hover { background-color: var(--electric-hover); border-color: var(--electric-hover); }
+
+/* Animated Custom Cursor */
+.custom-cursor {
+    width: 24px;
+    height: 24px;
+    background: radial-gradient(circle, rgba(168,85,247,0.8) 0%, rgba(59,130,246,0.3) 100%);
+    border-radius: 50%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px 4px rgba(168,85,247,0.4);
+    transition: width 0.1s, height 0.1s, background 0.1s;
+    mix-blend-mode: screen;
+}
+.custom-cursor.hover {
+    width: 45px;
+    height: 45px;
+    background: radial-gradient(circle, rgba(59,130,246,0.6) 0%, rgba(168,85,247,0.2) 100%);
+    box-shadow: 0 0 25px 8px rgba(59,130,246,0.5);
+}
+
+/* Primary Button with Neon Glow */
+.btn-electric { 
+    background: linear-gradient(135deg, var(--electric), var(--neon-purple));
+    border: none;
+    position: relative;
+    z-index: 1;
+}
+.btn-electric::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    background: linear-gradient(135deg, var(--neon-purple), var(--electric));
+    z-index: -1;
+    border-radius: 10px; /* matched to button radius later */
+    filter: blur(8px);
+    opacity: 0.6;
+    transition: var(--transition);
+}
+.btn-electric:hover::before {
+    filter: blur(12px);
+    opacity: 1;
+}
+.btn-electric:hover { 
+    transform: scale(1.05);
+}
 .shadow-electric { box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39); }
-.shadow-electric:hover { box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45); transform: translateY(-1px); }
 
 /* Layout adjustments */
 .main-content {
@@ -32,34 +85,37 @@ body {
 
 /* Glassmorphism Navbar */
 .glass-nav {
-    background: rgba(15, 17, 21, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(13, 13, 13, 0.7); /* Deep charcoal alpha */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .p-btn-hover {
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, transform var(--transition);
 }
 .p-btn-hover:hover {
     color: var(--white) !important;
 }
 
-/* Premium Glass Cards */
+/* Premium Glass Cards with 1.05x Hover */
 .glass-card {
-    background: rgba(26, 29, 36, 0.6);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: rgba(22, 22, 26, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); /* Deeper drop shadow */
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
 
 .glass-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+    border-color: rgba(168, 85, 247, 0.3); /* Soft purple border glow on hover */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
 /* Base Form Overrides for Django rendered forms */
@@ -90,16 +146,21 @@ body {
 
 /* Overwrite generic buttons to match new aesthetic */
 .btn-primary {
-    background-color: var(--electric);
+    background: linear-gradient(135deg, var(--electric), var(--neon-purple));
     border: none;
     padding: 0.75rem 1.5rem;
     font-weight: 600;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    border-radius: 10px;
+    transition: transform var(--transition);
 }
 .btn-primary:hover {
-    background-color: var(--electric-hover);
-    transform: translateY(-1px);
+    transform: scale(1.05);
+}
+.btn-outline-light {
+    transition: transform var(--transition), background-color 0.2s ease;
+}
+.btn-outline-light:hover {
+    transform: scale(1.05);
 }
 
 /* Keep basic priority colors but adapt for dark theme */

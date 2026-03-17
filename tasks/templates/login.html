@@ -3,25 +3,27 @@
 {% block title %}Login - CampusTaskFlow{% endblock %}
 
 {% block content %}
-<div style="max-width: 400px; margin: 0 auto; background: var(--white); padding: 2rem; border-radius: var(--border-radius); box-shadow: var(--box-shadow);">
-    <h2 style="text-align: center; margin-bottom: 1.5rem;">Login</h2>
+<div class="container fade-in-scroll d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+    <div class="glass-card p-5 w-100" style="max-width: 450px;">
+        <h2 class="text-center fw-bold text-white mb-4">Welcome <span class="text-electric">Back</span></h2>
 
-    {% if verification_success %}
-    <div style="background-color: #e8f5e9; color: #2e7d32; padding: 1rem; border-radius: var(--border-radius); text-align: center; margin-bottom: 1rem;">
-        <p>Email successfully verified! You may now log in.</p>
-    </div>
-    {% endif %}
-    {% if verification_failed %}
-    <div style="background-color: #ffebee; color: #c62828; padding: 1rem; border-radius: var(--border-radius); text-align: center; margin-bottom: 1rem;">
-        <p>Verification link invalid or expired.</p>
-    </div>
-    {% endif %}
+        {% if verification_success %}
+        <div class="alert bg-charcoal border border-success text-success p-3 rounded-3 text-center mb-4 border-opacity-50">
+            <p class="mb-0 fw-medium">Email successfully verified! You may now log in.</p>
+        </div>
+        {% endif %}
+        {% if verification_failed %}
+        <div class="alert bg-charcoal border border-danger text-danger p-3 rounded-3 text-center mb-4 border-opacity-50">
+            <p class="mb-0 fw-medium">Verification link invalid or expired.</p>
+        </div>
+        {% endif %}
 
-    <form method="POST" class="task-form" style="padding: 0; box-shadow: none; max-width: 100%;">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Log In</button>
-    </form>
-    <p style="text-align: center; margin-top: 1rem;">Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+        <form method="POST" class="task-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-electric shadow-electric w-100 py-2 mt-3" style="font-size: 1.1rem;">Log In</button>
+        </form>
+        <p class="text-center mt-4 mb-0 text-white-50">Don't have an account? <a href="{% url 'register' %}" class="text-electric text-decoration-none fw-medium p-btn-hover">Register here</a></p>
+    </div>
 </div>
 {% endblock %}
