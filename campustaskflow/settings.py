@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 import environ
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,6 +35,17 @@ SECRET_KEY = env('SECRET_KEY', default='django-insecure-c+qzhk5xu2og!$z$zh5=f9u0
 DEBUG = env('DEBUG', default=True)
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
+
+# Get CSRF_TRUSTED_ORIGINS from environment, otherwise allow all origins
+# Render domains look like: https://app-name.onrender.com
+# Use env.list to easily handle comma-separated lists if needed
+trusted_origins = env.list('CSRF_TRUSTED_ORIGINS', default=[])
+if trusted_origins:
+    CSRF_TRUSTED_ORIGINS = trusted_origins
+else:
+    # If not explicitly set, we could leave it empty or default to ALLOWED_HOSTS formats
+    pass
+
 
 
 # Application definition
@@ -89,6 +101,11 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Override DATABASES if DATABASE_URL is present in the environment (e.g. from Render)
+database_url = env('DATABASE_URL', default=None)
+if database_url:
+    DATABASES['default'] = dj_database_url.parse(database_url, conn_max_age=600)
 
 
 # Password validation
